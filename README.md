@@ -1,1 +1,3 @@
 # gmidiff
+
+Geminispace diff script. 
