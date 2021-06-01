@@ -10,11 +10,31 @@ function help() {
 
 # Function inspired on https://gitlab.com/uoou/dotfiles/-/blob/master/stow/bin/home/drew/.local/bin/lace
 function get() {
+	
+	# Prepare valid filename and file for content
+	file=$(echo "."$2 | sed -e 's/[^A-Za-z0-9._-]/_/g')
+	if [ ! -f $file ] 
+	then
+		touch "$file"
+	fi
+
+	# Get and process a new content
 	content=$(timeout 5 openssl s_client -crlf -quiet -connect "$1:1965" <<< "gemini://$2/" 2>/dev/null)
 	content=$(echo "$content" | grep -E "(#)|(=>)")
 	hash=$(echo -n "$content" | sha256sum)
-	echo "$content"
-	echo "$hash" 		
+
+	# Read a previous hash and content from file
+	last_hash=$(sed '1!d' "$file")
+	last_content=$(sed '1d' "$file")
+	
+	if test "$last_hash" = "$hash"; then
+		echo "Nothing is changed."
+	else
+		echo "New hash of content is $hash"
+		# Print a new hash and content to file
+		echo "$hash" > $file		
+		echo "$content" >> $file
+	fi
 	exit
 }
 
