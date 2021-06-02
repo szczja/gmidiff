@@ -50,7 +50,8 @@ function add() {
 
 	# Read a previous hash and content from file
 	last_hash=$(sed '1!d' "$file")
-	
+
+	# FIXME: Some issue here, sequence add, update get different hash	
 	if test "$last_hash" = "$hash"; then
 		echo "Nothing is changed."
 	else
@@ -71,6 +72,7 @@ function update {
 
 	contentfiles="${configdir}/.*.gmidiff"
 
+	# FIXME: Some issue here, only first file in loop is processed when function add is called
 	for f in $contentfiles
 	do
 		address=$(sed '2!d' "$f")
