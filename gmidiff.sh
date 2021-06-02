@@ -2,8 +2,8 @@
 
 function help() {
 	echo -e "\nUsage:\n"
-	echo -e "\t$(basename "$0") add domain url - add a new Geminispace address, e.g.:\n"
-	echo -e "\t$(basename "$0") add geminispace.info geminispace.info/backlinks?szczezuja.flounder.online\n"
+	echo -e "\t$(basename "$0") add url - add a new Geminispace address, e.g.:\n"
+	echo -e "\t$(basename "$0") add geminispace.info/backlinks?szczezuja.flounder.online\n"
 	echo -e "\t$(basename "$0") update - update previously added adresses\n"
 	echo -e "\t$(basename "$0") help - print this help\n"
 	exit
@@ -32,8 +32,11 @@ function add() {
 	# Get config directory
 	configdir=$(get_dir)
 
+	address=$1
+	domain=$(get_domain_name "$address")
+
 	# Prepare valid filename and file for content
-	file=$(echo "."$2 | sed -e 's/[^A-Za-z0-9._-]/_/g')
+	file=$(echo "."$address | sed -e 's/[^A-Za-z0-9._-]/_/g')
 	file="${configdir}/${file}.gmidiff"
 	if [ ! -f $file ] 
 	then
@@ -41,7 +44,7 @@ function add() {
 	fi
 
 	# Get and process a new content
-	content=$(timeout 5 openssl s_client -crlf -quiet -connect "$1:1965" <<< "gemini://$2/" 2>/dev/null)
+	content=$(timeout 5 openssl s_client -crlf -quiet -connect "$domain:1965" <<< "gemini://$address/" 2>/dev/null)
 	content=$(echo "$content" | grep -E "(#)|(=>)")
 	hash=$(echo -n "$content" | sha256sum)
 
@@ -54,7 +57,7 @@ function add() {
 		echo "New hash of content is $hash"
 		# Print a new hash and content to file
 		echo "$hash" > $file		
-		echo "$2" >> $file
+		echo "$address" >> $file
 		echo "$content" >> $file
 	fi
 	exit
@@ -80,7 +83,7 @@ function update {
 }
 
 if [[ "$1" == "add" ]];then
-	add "$2" "$3"
+	add "$2" 
 elif [[ "$1" == "update" ]];then
 	update
 else
