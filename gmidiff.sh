@@ -8,11 +8,26 @@ function help() {
 	exit
 }
 
+# Init and print config directory
+function get_dir() {
+	if [ -z "$XDG_CONFIG_HOME" ];then
+		configdir="$HOME/.config/gmidiff"
+	else
+		configdir="$XDG_CONFIG_HOME/gmidiff"
+	fi
+	[[ ! -d "$configdir" ]] && mkdir -p $configdir
+	echo $configdir
+}
+
 # Function inspired on https://gitlab.com/uoou/dotfiles/-/blob/master/stow/bin/home/drew/.local/bin/lace
 function get() {
 	
+	# Get config directory
+	configdir=$(get_dir)
+
 	# Prepare valid filename and file for content
 	file=$(echo "."$2 | sed -e 's/[^A-Za-z0-9._-]/_/g')
+	file="${configdir}/${file}.gmidiff"
 	if [ ! -f $file ] 
 	then
 		touch "$file"
