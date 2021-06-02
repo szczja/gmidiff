@@ -19,6 +19,11 @@ function get_dir() {
 	echo $configdir
 }
 
+# Get domain name from full address
+function get_domain_name() {
+	echo "$1" | sed -e 's|^[^/]*//||' -e 's|/.*$||'
+}
+
 # Add a new site 
 # Function inspired on https://gitlab.com/uoou/dotfiles/-/blob/master/stow/bin/home/drew/.local/bin/lace
 function add() {
@@ -41,7 +46,6 @@ function add() {
 
 	# Read a previous hash and content from file
 	last_hash=$(sed '1!d' "$file")
-	last_content=$(sed '1d' "$file")
 	
 	if test "$last_hash" = "$hash"; then
 		echo "Nothing is changed."
@@ -49,13 +53,35 @@ function add() {
 		echo "New hash of content is $hash"
 		# Print a new hash and content to file
 		echo "$hash" > $file		
+		echo "$2" >> $file
 		echo "$content" >> $file
 	fi
 	exit
 }
 
+# Update previously added sites
+function update {
+
+	# Get config directory
+	configdir=$(get_dir)
+
+	contentfiles="${configdir}/.*.gmidiff"
+
+	for f in $contentfiles
+	do
+		address=$(sed '2!d' "$f")
+		domain=$(get_domain_name "$address")
+		
+		echo "Updating ${address}"
+		add "$domain" "$address"
+	done
+
+}
+
 if [[ "$1" == "add" ]];then
 	add "$2" "$3"
+elif [[ "$1" == "update" ]];then
+	update
 else
 	help
 fi
