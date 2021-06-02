@@ -53,9 +53,7 @@ function get() {
 	exit
 }
 
-if [[ "$1" == "help" ]] || [[ "$1" == "--help" ]] || [[ "$1" == "-help" ]] || [[ "$1" == "-h" ]];then
-	help
-elif [[ "$1" == "get" ]];then
+if [[ "$1" == "get" ]];then
 	get "$2" "$3"
 else
 	help
