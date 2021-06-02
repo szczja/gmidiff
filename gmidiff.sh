@@ -2,8 +2,8 @@
 
 function help() {
 	echo -e "\nUsage:\n"
-	echo -e "\t$(basename "$0") get domain url - get content of Geminispace address, e.g.:\n"
-	echo -e "\t$(basename "$0") get geminispace.info geminispace.info/backlinks?szczezuja.flounder.online\n"
+	echo -e "\t$(basename "$0") add domain url - add a new Geminispace address, e.g.:\n"
+	echo -e "\t$(basename "$0") add geminispace.info geminispace.info/backlinks?szczezuja.flounder.online\n"
 	echo -e "\t$(basename "$0") help - print this help\n"
 	exit
 }
@@ -19,8 +19,9 @@ function get_dir() {
 	echo $configdir
 }
 
+# Add a new site 
 # Function inspired on https://gitlab.com/uoou/dotfiles/-/blob/master/stow/bin/home/drew/.local/bin/lace
-function get() {
+function add() {
 	
 	# Get config directory
 	configdir=$(get_dir)
@@ -53,8 +54,8 @@ function get() {
 	exit
 }
 
-if [[ "$1" == "get" ]];then
-	get "$2" "$3"
+if [[ "$1" == "add" ]];then
+	add "$2" "$3"
 else
 	help
 fi
