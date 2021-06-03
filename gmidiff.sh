@@ -107,7 +107,11 @@ function reset() {
 		response="no"
 	fi 
 	if [[ "$response" == "yes" ]];then
-		rm "${configdir}/.*.gmidiff" && echo "Saved sites removed."
+		for f in $contentfiles
+		do
+			if [[ ! -e "$f" ]]; then continue; fi 
+			rm -v "$f"
+		done
 	else
 		echo "Nothing is removed."
 	fi
