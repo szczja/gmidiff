@@ -61,7 +61,6 @@ function add() {
 		echo "$address" >> $file
 		echo "$content" >> $file
 	fi
-	exit
 }
 
 # Update previously added sites
@@ -72,7 +71,7 @@ function update {
 
 	contentfiles="${configdir}/.*.gmidiff"
 
-	# FIXME: Some issue here, only first file in loop is processed when function add is called
+	# Iteration by sites previously processed by command add
 	for f in $contentfiles
 	do
 		address=$(sed '2!d' "$f")
