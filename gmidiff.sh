@@ -29,7 +29,7 @@ function get_domain_name() {
 # Mail $1 subject, $2 content to $USER@localhost
 function send_mail() {
 	mail="Subject: ${1} \n\n${2}\n"
-	echo -e "$mail" | sendmail -i -- "${USER}@localhost"
+	echo -e "$mail" | /usr/sbin/sendmail -i -- "${USER}@localhost"	# Full path to sendmail for crontab
 }
 
 # Add a new site 
