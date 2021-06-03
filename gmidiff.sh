@@ -3,7 +3,7 @@
 function help() {
 	echo -e "\nUsage:\n"
 	echo -e "\t$(basename "$0") add url - add a new Geminispace address, e.g.:\n"
-	echo -e "\t$(basename "$0") add geminispace.info/backlinks?szczezuja.flounder.online\n"
+	echo -e "\t$(basename "$0") add geminispace.info/backlinks?szczezuja.space\n"
 	echo -e "\t$(basename "$0") update - update previously added adresses\n"
 	echo -e "\t$(basename "$0") reset - remove all previously added adresses\n"
 	echo -e "\t$(basename "$0") help - print this help\n"

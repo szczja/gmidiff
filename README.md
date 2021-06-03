@@ -25,7 +25,7 @@ Every file is build as:
 ### Usage
 
 * gmidiff.sh add url - add a new Geminispace address, e.g.:
-* gmidiff.sh add geminispace.info/backlinks?szczezuja.flounder.online
+* gmidiff.sh add geminispace.info/backlinks?szczezuja.space
 * gmidiff.sh update - update previously added adresses
 * gmidiff.sh reset - remove all previously added adresses
 * gmidiff.sh help - print this help
