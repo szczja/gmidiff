@@ -52,7 +52,7 @@ function add() {
 
 	# Get and process a new content
 	content=$(timeout 5 openssl s_client -crlf -quiet -connect "$domain:1965" <<< "gemini://$address/" 2>/dev/null)
-	content=$(echo "$content" | grep -E "(#)|(=>)")
+	content=$(echo "$content" | grep -E "(#)|(##)|(###)|(=>)")
 	hash=$(echo -n "$content" | sha256sum)
 
 	# Read a previous hash and content from file
