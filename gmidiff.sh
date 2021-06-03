@@ -5,6 +5,7 @@ function help() {
 	echo -e "\t$(basename "$0") add url - add a new Geminispace address, e.g.:\n"
 	echo -e "\t$(basename "$0") add geminispace.info/backlinks?szczezuja.flounder.online\n"
 	echo -e "\t$(basename "$0") update - update previously added adresses\n"
+	echo -e "\t$(basename "$0") reset - remove all previously added adresses\n"
 	echo -e "\t$(basename "$0") help - print this help\n"
 	exit
 }
@@ -64,7 +65,7 @@ function add() {
 }
 
 # Update previously added sites
-function update {
+function update() {
 
 	# Get config directory
 	configdir=$(get_dir)
@@ -74,6 +75,7 @@ function update {
 	# Iteration by sites previously processed by command add
 	for f in $contentfiles
 	do
+		if [[ ! -e "$f" ]]; then continue; fi 
 		address=$(sed '2!d' "$f")
 		domain=$(get_domain_name "$address")
 		
@@ -83,10 +85,42 @@ function update {
 
 }
 
+# Removing previously added sites
+function reset() {
+
+	# Get config directory
+	configdir=$(get_dir)
+
+	contentfiles="${configdir}/.*.gmidiff"
+	n=0
+
+	# Iteration by sites previously processed by command add
+	for f in $contentfiles
+	do
+		if [[ ! -e "$f" ]]; then continue; fi 
+		n=$((n+1))
+		echo "${n} - ${f}"
+	done
+	if ((n > 0)); then
+		echo "Are you sure to remove ${n} saved sites? [yes/no]"
+		read response
+	else
+		response="no"
+	fi 
+	if [[ "$response" == "yes" ]];then
+		rm "${configdir}/.*.gmidiff" && echo "Saved sites removed."
+	else
+		echo "Nothing is removed."
+	fi
+
+}
+
 if [[ "$1" == "add" ]];then
 	add "$2" 
 elif [[ "$1" == "update" ]];then
 	update
+elif [[ "$1" == "reset" ]];then
+	reset
 else
 	help
 fi
