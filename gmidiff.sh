@@ -52,7 +52,6 @@ function add() {
 	# Read a previous hash and content from file
 	last_hash=$(sed '1!d' "$file")
 
-	# FIXME: Some issue here, sequence add, update get different hash	
 	if test "$last_hash" = "$hash"; then
 		echo "Nothing is changed."
 	else
@@ -80,7 +79,7 @@ function update() {
 		domain=$(get_domain_name "$address")
 		
 		echo "Updating ${address}"
-		add "$domain" "$address"
+		add "$address"
 	done
 
 }
