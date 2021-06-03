@@ -26,6 +26,12 @@ function get_domain_name() {
 	echo "$1" | sed -e 's|^[^/]*//||' -e 's|/.*$||'
 }
 
+# Mail $1 subject, $2 content to $USER@localhost
+function send_mail() {
+	content="Subject: ${1} \n\n${2}\n"
+	echo -e "$content" | sendmail -i -- "${USER}@localhost"
+}
+
 # Add a new site 
 # Function inspired on https://gitlab.com/uoou/dotfiles/-/blob/master/stow/bin/home/drew/.local/bin/lace
 function add() {
@@ -56,6 +62,7 @@ function add() {
 		echo "Nothing is changed."
 	else
 		echo "New hash of content is $hash"
+		send_mail "New content at ${address}" "$content"
 		# Print a new hash and content to file
 		echo "$hash" > $file		
 		echo "$address" >> $file
