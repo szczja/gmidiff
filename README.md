@@ -21,6 +21,7 @@ Every file is build as:
 * openssl
 * sha256sum
 * sed 
+* diff
 
 ### Usage
 

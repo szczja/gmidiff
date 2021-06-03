@@ -28,8 +28,8 @@ function get_domain_name() {
 
 # Mail $1 subject, $2 content to $USER@localhost
 function send_mail() {
-	content="Subject: ${1} \n\n${2}\n"
-	echo -e "$content" | sendmail -i -- "${USER}@localhost"
+	mail="Subject: ${1} \n\n${2}\n"
+	echo -e "$mail" | sendmail -i -- "${USER}@localhost"
 }
 
 # Add a new site 
@@ -56,13 +56,15 @@ function add() {
 	hash=$(echo -n "$content" | sha256sum)
 
 	# Read a previous hash and content from file
-	last_hash=$(sed '1!d' "$file")
+	last_hash=$(sed '1!d' "$file")		# first line only
+	last_content=$(sed '1,2d' "$file")	# third+ lines only
 
 	if test "$last_hash" = "$hash"; then
 		echo "Nothing is changed."
 	else
 		echo "New hash of content is $hash"
-		send_mail "New content at ${address}" "$content"
+		mail_content=$(diff <(echo "$content") <(echo "$last_content"))
+		send_mail "New content at ${address}" "$mail_content"
 		# Print a new hash and content to file
 		echo "$hash" > $file		
 		echo "$address" >> $file
