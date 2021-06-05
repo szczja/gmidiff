@@ -4,9 +4,10 @@ function help() {
 	echo -e "\nUsage:\n"
 	echo -e "\t$(basename "$0") add url - add a new Geminispace address, e.g.:\n"
 	echo -e "\t$(basename "$0") add geminispace.info/backlinks?szczezuja.space\n"
-	echo -e "\t$(basename "$0") update - update previously added adresses\n"
-	echo -e "\t$(basename "$0") reset - remove all previously added adresses\n"
+	echo -e "\t$(basename "$0") configure - set configuration information\n"
 	echo -e "\t$(basename "$0") help - print this help\n"
+	echo -e "\t$(basename "$0") reset - remove all previously added adresses\n"
+	echo -e "\t$(basename "$0") update - update previously added adresses\n"
 	exit
 }
 
@@ -29,7 +30,8 @@ function get_domain_name() {
 # Mail $1 subject, $2 content to $USER@localhost
 function send_mail() {
 	mail="Subject: ${1} \n\n${2}\n"
-	echo -e "$mail" | /usr/sbin/sendmail -i -- "${USER}@localhost"	# Full path to sendmail for crontab
+	mail_address=$(get_config_email)
+	echo -e "$mail" | /usr/sbin/sendmail -i -- "$mail_address"	# Full path to sendmail for crontab
 }
 
 # Add a new site 
@@ -110,10 +112,10 @@ function reset() {
 		echo "${n} - ${f}"
 	done
 	if ((n > 0)); then
-		echo "Are you sure to remove ${n} saved sites? [yes/no]"
+		echo "Are you sure to remove ${n} saved sites? [yes/NO]"
 		read response
 	else
-		response="no"
+		response="NO"
 	fi 
 	if [[ "$response" == "yes" ]];then
 		for f in $contentfiles
@@ -127,12 +129,47 @@ function reset() {
 
 }
 
+# Get email address which is set by configure command or $USER@localhost
+function get_config_email() {
+
+	# Get config directory
+	configdir=$(get_dir)
+	
+	if [[ ! -e "${configdir}/.email.gmidiff_config" ]]; then 
+		cat "${configdir}/.email.gmidiff_config"
+	else
+		echo "${USER}@localhost"
+	fi 
+}
+
+# Set configuration information used by other commands
+function configure() {
+
+	# Get config directory
+	configdir=$(get_dir)
+
+	for (( ; ; ))
+	do
+		echo "What is your e-mail address?"
+		read config_email
+		echo "Is \"${config_email}\" is correct [yes/NO]?"
+		read config_email_correct
+		if [[ "$config_email_correct" == "yes" ]];then
+			break
+		fi
+	done
+
+	echo "$config_email" > "${configdir}/.email.gmidiff_config"
+}	
+
 if [[ "$1" == "add" ]];then
 	add "$2" 
 elif [[ "$1" == "update" ]];then
 	update
 elif [[ "$1" == "reset" ]];then
 	reset
+elif [[ "$1" == "configure" ]];then
+	configure
 else
 	help
 fi
