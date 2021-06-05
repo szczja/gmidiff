@@ -37,6 +37,8 @@ function send_mail() {
 # Add a new site 
 # Function inspired on https://gitlab.com/uoou/dotfiles/-/blob/master/stow/bin/home/drew/.local/bin/lace
 function add() {
+
+	echo "Get: ${1}"
 	
 	# Get config directory
 	configdir=$(get_dir)
@@ -62,9 +64,9 @@ function add() {
 	last_content=$(sed '1,2d' "$file")	# third+ lines only
 
 	if test "$last_hash" = "$hash"; then
-		echo "Nothing is changed."
+		echo " -> Nothing is changed."
 	else
-		echo "New hash of content is $hash"
+		echo " -> New hash of content is $hash"
 		mail_content=$(diff <(echo "$content") <(echo "$last_content"))
 		send_mail "New content at ${address}" "$mail_content"
 		# Print a new hash and content to file
@@ -77,6 +79,8 @@ function add() {
 # Update previously added sites
 function update() {
 
+	echo "Updating:"
+
 	# Get config directory
 	configdir=$(get_dir)
 
@@ -88,8 +92,6 @@ function update() {
 		if [[ ! -e "$f" ]]; then continue; fi 
 		address=$(sed '2!d' "$f")
 		domain=$(get_domain_name "$address")
-		
-		echo "Updating ${address}"
 		add "$address"
 	done
 
