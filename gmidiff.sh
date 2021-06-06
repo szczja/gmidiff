@@ -31,7 +31,13 @@ function get_domain_name() {
 function send_mail() {
 	mail="Subject: ${1} \n\n${2}\n"
 	mail_address=$(get_config_email)
-	echo -e "$mail" | /usr/sbin/sendmail -i -- "$mail_address"	# Full path to sendmail for crontab
+
+	# Check if mail address is not empty, for example script running from crontab
+	if [[ $mail_address =~ ^.+@.+$ ]]; then 
+		echo -e "$mail" | /usr/sbin/sendmail -i -- "$mail_address"	# Full path to sendmail for crontab
+	else
+		echo -e "$2" 
+	fi
 }
 
 # Add a new site 
