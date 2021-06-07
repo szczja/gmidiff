@@ -1,6 +1,6 @@
 # Gemini diff script - gmidiff.sh
 
-Bash script able to get content of valid Gemini protocol address, compute a hash of content and compare it with a earlier saved hash. Script can store multiple addresses. Script sends mail with a new content to $USER@localhost.
+Bash script able to get content of valid Gemini protocol address, compute a hash of content and compare it with a earlier saved hash. Script can store multiple addresses. During add and update commands script compares hashes of the content. If configure command has been done, and e-mail address has been set, and content changed, script will sent diff via e-mail, in other case script will print diff on standard output.  
 
 ## Configuration files
 
@@ -27,6 +27,7 @@ Every file is build as:
 
 * gmidiff.sh add url - add a new Geminispace address, e.g.:
 * gmidiff.sh add geminispace.info/backlinks?szczezuja.space
+* gmidiff.sh configure - set configuration information 
 * gmidiff.sh update - update previously added adresses
 * gmidiff.sh reset - remove all previously added adresses
 * gmidiff.sh help - print this help
