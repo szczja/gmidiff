@@ -146,7 +146,8 @@ function get_config_email() {
 	if [[ ! -e "${configdir}/.email.gmidiff_config" ]]; then 
 		cat "${configdir}/.email.gmidiff_config"
 	else
-		echo "${USER}@localhost"
+		# No e-mail, when user didn't configure script
+		echo ""
 	fi 
 }
 
