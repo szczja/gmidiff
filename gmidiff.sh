@@ -73,7 +73,7 @@ function add() {
 	if test "$last_hash" = "$hash"; then
 		echo " -> Nothing is changed."
 	else
-		echo " -> New hash of content is $hash"
+		echo " -> New hash of content is $hash and it's saved to $file."
 		mail_content=$(diff <(echo "$content") <(echo "$last_content"))
 		send_mail "New content at ${address}" "$mail_content"
 		# Print a new hash and content to file
