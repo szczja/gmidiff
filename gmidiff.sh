@@ -36,6 +36,7 @@ function send_mail() {
 	if [[ $mail_address =~ ^.+@.+$ ]]; then 
 		echo -e "$mail" | /usr/sbin/sendmail -i -- "$mail_address"	# Full path to sendmail for crontab
 	else
+		echo "Content is printed because script isn't configured."
 		echo -e "$2" 
 	fi
 }
@@ -142,9 +143,10 @@ function get_config_email() {
 
 	# Get config directory
 	configdir=$(get_dir)
-	
-	if [[ ! -e "${configdir}/.email.gmidiff_config" ]]; then 
-		cat "${configdir}/.email.gmidiff_config"
+	configfile="${configdir}/.email.gmidiff_config"
+
+	if [[ -e "$configfile" ]]; then 
+		cat "$configfile"
 	else
 		# No e-mail, when user didn't configure script
 		echo ""
