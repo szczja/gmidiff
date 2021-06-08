@@ -63,24 +63,29 @@ function add() {
 
 	# Get and process a new content
 	content=$(timeout 5 openssl s_client -crlf -quiet -connect "$domain:1965" <<< "gemini://$address/" 2>/dev/null)
-	content=$(echo "$content" | grep -E "(#)|(##)|(###)|(=>)")
-	hash=$(echo -n "$content" | sha256sum)
-
-	# Read a previous hash and content from file
-	last_hash=$(sed '1!d' "$file")		# first line only
-	last_content=$(sed '1,2d' "$file")	# third+ lines only
-
-	if test "$last_hash" = "$hash"; then
-		echo " -> Nothing is changed."
+	
+	if [ -z "$content" ]; then
+		echo " -> Timeout or empty response."
 	else
-		echo " -> New hash of content is $hash and it's saved to $file."
-		mail_content=$(diff <(echo "$content") <(echo "$last_content"))
-		send_mail "New content at ${address}" "$mail_content"
-		# Print a new hash and content to file
-		echo "$hash" > $file		
-		echo "$address" >> $file
-		echo "$content" >> $file
-	fi
+		content=$(echo "$content" | grep -E "(#)|(##)|(###)|(=>)")
+		hash=$(echo -n "$content" | sha256sum)
+
+		# Read a previous hash and content from file
+		last_hash=$(sed '1!d' "$file")		# first line only
+		last_content=$(sed '1,2d' "$file")	# third+ lines only
+
+		if test "$last_hash" = "$hash"; then
+			echo " -> Nothing is changed."
+		else
+			echo " -> New hash of content is $hash and it's saved to $file."
+			mail_content=$(diff <(echo "$content") <(echo "$last_content"))
+			send_mail "New content at ${address}" "$mail_content"
+			# Print a new hash and content to file
+			echo "$hash" > $file		
+			echo "$address" >> $file
+			echo "$content" >> $file
+		fi
+	fi 
 }
 
 # Update previously added sites
