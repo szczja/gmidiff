@@ -80,7 +80,7 @@ function add() {
 			echo " -> Nothing is changed."
 		else
 			echo " -> New hash of content is $hash and it's saved to $file."
-			mail_content=$(diff <(echo "$content") <(echo "$last_content"))
+			mail_content=$(diff <(echo "$last_content") <(echo "$content"))
 			send_mail "New content at ${address}" "$mail_content"
 			# Print a new hash and content to file
 			echo "$hash" > $file		
