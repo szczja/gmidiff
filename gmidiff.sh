@@ -1,5 +1,7 @@
 #!/bin/bash
 
+OPENSSL_TIMEOUT=30
+
 function help() {
 	echo -e "\nUsage:\n"
 	echo -e "\t$(basename "$0") add url - add a new Geminispace address, e.g.:\n"
@@ -62,7 +64,7 @@ function add() {
 	fi
 
 	# Get and process a new content
-	content=$(timeout 5 openssl s_client -crlf -quiet -connect "$domain:1965" <<< "gemini://$address/" 2>/dev/null)
+	content=$(timeout $OPENSSL_TIMEOUT openssl s_client -crlf -quiet -connect "$domain:1965" <<< "gemini://$address/" 2>/dev/null)
 	
 	if [ -z "$content" ]; then
 		echo " -> Timeout or empty response."
